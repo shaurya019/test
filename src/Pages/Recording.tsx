@@ -1,8 +1,10 @@
 import React, { useState, useRef, useCallback } from "react";
+import { json } from "stream/consumers";
+import { v4 as uuidv4 } from "uuid";
 
 const Recording: React.FC = () => {
   const [chunkDuration, setChunkDuration] = useState(10); // Duration of each chunk in seconds
-
+  const uuidRef = useRef<string>("");
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null); // media recorder
   const audioChunksRef = useRef<Blob[]>([]); // Ref to store incoming audio chunks
@@ -16,6 +18,9 @@ const Recording: React.FC = () => {
   // Start Recording function
   const startRecording = useCallback(async () => {
     try {
+      if (!uuidRef.current) {
+        uuidRef.current = uuidv4();
+      }
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
 
@@ -64,31 +69,64 @@ const Recording: React.FC = () => {
   // stop
   // start
 
+
+  async function convertFormDataToBase64(formData : any) {
+    const audioFile = formData.get("audio");
+    
+    if (!audioFile) {
+      throw new Error("No audio file found in FormData");
+    }
+  
+    // Convert Blob to ArrayBuffer
+    const arrayBuffer = await audioFile.arrayBuffer();
+    
+    // Convert ArrayBuffer to Base64
+    const uint8Array = new Uint8Array(arrayBuffer);
+    const base64String = btoa(uint8Array.reduce((data, byte) => data + String.fromCharCode(byte), ''));
+  
+    // Create the final JSON object
+    const encodedObject = {
+      uuid:uuidRef.current,
+      body: base64String,
+      isBase64Encoded: true
+    };
+  
+    return encodedObject;
+  }
+
+
   const uploadToRemote = async (audioBlob: Blob, audioUrl: string) => {
     const formData = new FormData();
 
     // Append the audio Blob to the FormData
     formData.append("audio", audioBlob, "audio.wav"); // Use the appropriate file name and extension
 
-    try {
-      // Send the form data containing the audio file
-      const response = await fetch(
-        "https://pr662n6jxj.execute-api.eu-north-1.amazonaws.com/v1",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+    convertFormDataToBase64(formData).then(async (encodedObject) => {
 
-      if (!response.ok) {
-        throw new Error("Failed to upload audio");
+      try {
+        // Send the form data containing the audio file
+        const response = await fetch(
+         `https://pr662n6jxj.execute-api.eu-north-1.amazonaws.com/dev/test`,
+          {
+            method: "POST",
+            body: JSON.stringify(encodedObject),
+          }
+        );
+  
+        if (!response.ok) {
+          throw new Error("Failed to upload audio");
+        }
+  
+        const responseData = await response.json(); // Assuming the server responds with JSON
+        console.log("Server response:", responseData);
+      } catch (error) {
+        console.error("Error uploading audio:", error);
       }
 
-      const responseData = await response.json(); // Assuming the server responds with JSON
-      console.log("Server response:", responseData);
-    } catch (error) {
-      console.error("Error uploading audio:", error);
-    }
+
+      console.log(JSON.stringify(encodedObject));  // Send this object as a request body
+    }).catch(console.error);
+
   };
 
   // Stop Recording function
