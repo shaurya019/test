@@ -61,6 +61,7 @@ const AudioRecorder: React.FC = () => {
 
   // Function to upload audio chunks to a server after converting to Base64
   const uploadChunk = async (chunk: Blob) => {
+    // change
     convertToBase64(chunk).then(async (base64) => {
       try {
         console.log('>> uploading chunk');
@@ -160,13 +161,18 @@ const AudioRecorder: React.FC = () => {
           set_cc(CurrentState.RETRIEVED);
           alert('Audio file retrieved successfully!');
 
+          
           const response_json = await response.json();
           const file = response_json.file;
 
+          const audioBlob = new Blob([new Uint8Array(atob(response_json.body).split('').map(c => c.charCodeAt(0)))], { type: 'audio/wav' });
+          const audioUrl = URL.createObjectURL(audioBlob);
+
+
           // Convert Base64 string to a Blob for audio playback
-          const audioBlob = base64ToBlob(file);
-          const audioBlobUrl = URL.createObjectURL(audioBlob);
-          setAudioUrl(audioBlobUrl);
+          // const audioBlob = base64ToBlob(file);
+          // const audioBlobUrl = URL.createObjectURL(audioBlob);
+          setAudioUrl(audioUrl);
         } else {
           set_cc(CurrentState.MERGED);
           alert('Error retrieving audio file. Please check console');
