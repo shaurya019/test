@@ -6,21 +6,20 @@ import Recording from './Pages/NewRecoding';
 const App: React.FC = () => {
   return (
     <Router>
-      {/* Navbar */}
-      <nav className="bg-indigo-600 p-5 shadow-md">
+
+      <nav className="bg-blue-600 p-5 shadow-md">
         <div className="max-w-7xl mx-auto flex justify-between items-center text-white">
-          {/* Branding */}
           <Link to="/" className="text-2xl font-extrabold text-yellow-300 hover:text-yellow-400 transition-colors">
-            MyApp
+            TASK
           </Link>
 
-          {/* Navbar Links */}
+
           <div className="space-x-6 hidden md:flex">
             <Link to="/" className="hover:text-indigo-200 transition-colors">Home</Link>
             <Link to="/recording" className="hover:text-indigo-200 transition-colors">Recording</Link>
           </div>
 
-          {/* Mobile Menu Button */}
+     
           <div className="md:hidden">
             <button className="text-white focus:outline-none">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -31,7 +30,7 @@ const App: React.FC = () => {
         </div>
       </nav>
 
-      {/* Routes */}
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/recording" element={<Recording />} />

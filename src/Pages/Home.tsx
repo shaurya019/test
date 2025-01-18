@@ -1,11 +1,12 @@
 import React from 'react';
+import './Home.css'; // import the CSS file for additional styles
 
 const Home = () => {
   const projects = [
     {
       title: 'Trucker Link',
       description: 'A specialized navigation app for truck routes with real-time communication features.',
-      techStack: 'React, Node.js, Firebase',
+      techStack: 'Flutter, Node.js, Sql, AWS S3, Dart, Firebase',
     },
     {
       title: 'Coding Hats',
@@ -15,47 +16,55 @@ const Home = () => {
   ];
 
   const technicalExperience = [
-    '2+ years experience in JavaScript and TypeScript',
-    '1+ year of experience with Flutter',
-    'Experience in Backend Development with Node.js, FastAPI, and Golang',
-    'Proficient in React, Next.js, Redux, and Tailwind CSS',
-    'Worked with AWS, MongoDB, SQL, and other cloud technologies',
+    'An experience Software Development Engineer and An certified AWS Solution Architect',
+    '2+ year of experience with React, TypeScript, Node.js, SpringBoot,Flutter and AWS',
+    'Experience in Backend Development with Node.js, SpringBoot, MongoDB , SQL and AWS backend services',
+    'Proficient in React, AWS services, TypeScript, Redux, and Tailwind CSS',
+    'Worked with AWS and other cloud technologies',
   ];
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="min-h-screen py-16 px-8">
+      {/* Navbar */}
+
       {/* Welcome Screen */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Welcome to My Portfolio</h1>
-        <p className="text-lg text-gray-600">
-          Hello! I'm Shaurya Pratap Singh, a passionate software engineer with experience in full-stack
-          development, backend systems, and cloud technologies.
+      <div className="max-w-5xl mx-auto text-center mb-16">
+        <h1 className="text-6xl font-bold text-blue-900 mb-6">Welcome to My Home Screen</h1>
+        <p className="text-xl text-gray-700 leading-relaxed">
+          Hello! I'm <span className="font-semibold text-blue-700">Shaurya Pratap Singh</span>, a software engineer passionate about building scalable, innovative solutions
+          in full-stack development, backend systems, and an Certified AWS Solution Architect.
         </p>
       </div>
 
+       {/* Technical Experience Section */}
+       <div className="max-w-6xl mx-auto mb-20">
+        <h2 className="text-4xl font-bold text-blue-800 mb-10 border-b-4 border-blue-300 inline-block">Technical Experience</h2>
+        <ul className="list-disc list-inside space-y-4 text-lg text-gray-800">
+          {technicalExperience.map((item, index) => (
+            <li key={index} className="hover:text-blue-600 transition-colors duration-200">{item}</li>
+          ))}
+        </ul>
+      </div>
+
       {/* Projects Section */}
-      <div className="mb-12">
-        <h2 className="text-3xl font-semibold mb-6">Previous Projects</h2>
-        <div className="grid md:grid-cols-2 gap-6">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-4xl font-bold text-blue-800 mb-10 border-b-4 border-blue-300 inline-block">Projects</h2>
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-10">
           {projects.map((project, index) => (
-            <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
-              <h3 className="text-2xl font-semibold mb-3">{project.title}</h3>
-              <p className="text-gray-700 mb-3">{project.description}</p>
-              <p className="text-sm text-gray-500"><strong>Tech Stack:</strong> {project.techStack}</p>
+            <div
+              key={index}
+              className="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300 border-t-4 border-blue-500"
+            >
+              <h3 className="text-3xl font-semibold text-blue-900 mb-3">{project.title}</h3>
+              <p className="text-gray-600 mb-4">{project.description}</p>
+              <p className="text-sm text-blue-700 font-medium">
+                <strong>Tech Stack:</strong> {project.techStack}
+              </p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Technical Experience Section */}
-      <div>
-        <h2 className="text-3xl font-semibold mb-6">Technical Experience</h2>
-        <ul className="list-disc list-inside space-y-3 text-lg text-gray-700">
-          {technicalExperience.map((item, index) => (
-            <li key={index}>{item}</li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 };

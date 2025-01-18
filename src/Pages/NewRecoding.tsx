@@ -199,24 +199,63 @@ const AudioRecorder: React.FC = () => {
   };
 
   return (
-    <div>
-      current_state: {current_state}
-      <br />
-      <button onClick={startRecording}>Start Recording</button>
-      <button onClick={stopRecording}>Stop Recording</button>
-      <button onClick={mergeChunks}>Merge Chunks</button>
-      <button onClick={retrieveUrl}>Retrieve File</button>
-      <button onClick={deleteFile}>Delete File</button>
-
-      {audioUrl ? (
-        <audio controls>
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Audio Recording Controls</h2>
+    
+    {/* Current State */}
+    <div className="mb-6">
+      <span className="text-gray-600 font-medium">Current State:</span>
+      <span className="font-semibold text-blue-600 ml-2">{current_state}</span>
+    </div>
+  
+    {/* Action Buttons */}
+    <div className="space-y-4 mb-6">
+      <button
+        onClick={startRecording}
+        className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200 w-full"
+      >
+        Start Recording
+      </button>
+      <button
+        onClick={stopRecording}
+        className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-200 w-full"
+      >
+        Stop Recording
+      </button>
+      <button
+        onClick={mergeChunks}
+        className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition duration-200 w-full"
+      >
+        Merge Chunks
+      </button>
+      <button
+        onClick={retrieveUrl}
+        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 w-full"
+      >
+        Retrieve File
+      </button>
+      <button
+        onClick={deleteFile}
+        className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 w-full"
+      >
+        Delete File
+      </button>
+    </div>
+  
+    {/* Audio Playback */}
+    {audioUrl ? (
+      <div>
+        <h3 className="text-lg font-medium text-gray-800 mb-2">Audio Playback</h3>
+        <audio controls className="w-full rounded-md shadow-md">
           <source src={audioUrl} type="audio/wav" />
           Your browser does not support the audio element.
         </audio>
-      ) : (
-        <p>Audio is not available.</p>
-      )}
-    </div>
+      </div>
+    ) : (
+      <p className="text-gray-600">Audio is not available.</p>
+    )}
+  </div>
+  
   );
 };
 

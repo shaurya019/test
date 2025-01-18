@@ -1,0 +1,34 @@
+/* Apply a radial gradient background that gives the appearance of a "ball-like" effect */
+@keyframes ballGradientAnimation {
+    0% {
+      background-position: center center;
+      background-size: 150%;
+    }
+    50% {
+      background-position: top left;
+      background-size: 200%;
+    }
+    100% {
+      background-position: center center;
+      background-size: 150%;
+    }
+  }
+  
+  .ball-gradient {
+    background-color: white; /* White background color */
+    background-image: radial-gradient(circle, rgba(255, 94, 0, 0.8) 0%, rgba(0, 255, 94, 0.8) 100%);
+    background-size: 150%;
+    animation: ballGradientAnimation 6s ease infinite; /* Animation to move the gradient */
+  }
+  
+  /* Navbar styles */
+  .navbar {
+    background: linear-gradient(to right, #4e73df, #2e59ff);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .navbar:hover {
+    background: linear-gradient(to right, #2e59ff, #4e73df);
+  }
+  
