@@ -37,7 +37,7 @@ const AudioRecorder: React.FC = () => {
       mediaRecorder.current.ondataavailable = (event: BlobEvent) => {
         chunkCount.current += 1;
         console.time('chunk received');
-        uploadChunk(event.data);
+        handleAudioUpload(event.data);
         console.log(chunkCount.current, 'inactive?', mediaRecorder.current?.state === 'inactive');
       };
 
@@ -59,26 +59,51 @@ const AudioRecorder: React.FC = () => {
     }
   };
 
-  // Function to upload audio chunks to a server after converting to Base64
-  const uploadChunk = async (chunk: Blob) => {
-    // change
-    convertToBase64(chunk).then(async (base64) => {
-      try {
-        console.log('>> uploading chunk');
-        const upload_response = await fetch(
-          'https://pr662n6jxj.execute-api.eu-north-1.amazonaws.com/dev/test',
-          { method: 'POST', body: JSON.stringify({ uuid: sessionId.current, body: base64, isBase64Encoded: true }) }
-        );
-        const upload_response_json = await upload_response.json();
+  const handleAudioUpload = async (audioBlob : Blob) => {
+    const formData = new FormData();
+    formData.append("file", audioBlob);
+  
+    try {
+      const response = await fetch("https://pr662n6jxj.execute-api.eu-north-1.amazonaws.com/dev/test", {
+        method: "POST",
+        body: formData,
+        headers:{"Content-Type": "multipart/form-data"}
+      });
+  
+      if (response.ok) {
+        const upload_response_json = await response.json();
         sessionId.current = upload_response_json.uuid;
         console.log('>> chunk uploaded');
-      } catch (error) {
-        console.error('Error uploading chunk:', error);
+      } else {
+        console.error("Upload failed:", response.status, response.statusText);
       }
-    }).catch((error) => {
-      console.error('Error converting to base64:', error);
-    });
+    } catch (error) {
+      console.error("Error uploading audio:", error);
+    }
   };
+
+  
+
+  // Function to upload audio chunks to a server after converting to Base64
+  // const uploadChunk = async (chunk: Blob) => {
+  //   // change
+  //   convertToBase64(chunk).then(async (base64) => {
+  //     try {
+  //       console.log('>> uploading chunk');
+  //       const upload_response = await fetch(
+  //         'https://pr662n6jxj.execute-api.eu-north-1.amazonaws.com/dev/test',
+  //         { method: 'POST', body: JSON.stringify({ uuid: sessionId.current }) }
+  //       );
+  //       const upload_response_json = await upload_response.json();
+  //       sessionId.current = upload_response_json.uuid;
+  //       console.log('>> chunk uploaded');
+  //     } catch (error) {
+  //       console.error('Error uploading chunk:', error);
+  //     }
+  //   }).catch((error) => {
+  //     console.error('Error converting to base64:', error);
+  //   });
+  // };
 
   // Helper function to convert Blob to Base64 encoded string
   const convertToBase64 = (blob: Blob): Promise<string> => {
