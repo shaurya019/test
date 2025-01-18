@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './Pages/Home';
-import Recording from './Pages/Recording';
+import Recording from './Pages/NewRecoding';
 
 const App: React.FC = () => {
   return (
