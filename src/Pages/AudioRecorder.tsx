@@ -41,7 +41,7 @@ const AudioRecorder: React.FC = () => {
         set_cc(CurrentState.STOPPED);
       };
 
-      mediaRecorder.current.start(2000); // Split into 10-second chunks
+      mediaRecorder.current.start(20000); // Split into 10-second chunks
     } catch (error) {
       console.error('Error while recording', error);
     }
