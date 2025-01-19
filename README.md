@@ -1,46 +1,49 @@
-# Getting Started with Create React App
+# Audio Recorder React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This React application allows users to record audio, upload chunks to a backend server, merge the chunks into a single audio file, and delete the merged file.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- Start and stop audio recording
+- Upload audio chunks to a backend server
+- Merge audio chunks into a single file
+- Delete the merged audio file
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Usage
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. Open the application in your browser (usually at `http://localhost:3000`).
+2. Use the buttons to control the audio recording:
+    - **Start Recording**: Begins recording audio.
+    - **Stop Recording**: Stops the current recording session.
+    - **Merge Chunks**: Merges the recorded audio chunks into a single file.
+    - **Delete File**: Deletes the merged audio file.
 
-### `npm test`
+## Components
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### `AudioRecorder.tsx`
 
-### `npm run build`
+This component handles the audio recording functionality, including starting and stopping the recording, uploading chunks, merging chunks, and deleting the merged file.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### State Variables
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- `current_state`: Tracks the current state of the recording process.
+- `mediaRecorder`: Reference to the `MediaRecorder` instance.
+- `chunkCount`: Counter for the number of recorded chunks.
+- `sessionId`: Unique identifier for the recording session.
+- `mergedFileName`: Name of the merged audio file.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### Methods
 
-### `npm run eject`
+- `startRecording`: Starts the audio recording.
+- `stopRecording`: Stops the audio recording.
+- `uploadChunk`: Uploads a recorded audio chunk to the backend server.
+- `convertToBase64`: Converts a `Blob` to a Base64 string.
+- `mergeChunks`: Merges the recorded audio chunks into a single file.
+- `deleteFile`: Deletes the merged audio file.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Backend Endpoints
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- `POST /dev/test`: Uploads an audio chunk.
+- `POST /dev/test-merge`: Merges the uploaded audio chunks.
+- `DELETE /dev/delete-chunk`: Deletes the merged audio file.

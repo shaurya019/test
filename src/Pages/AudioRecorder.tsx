@@ -41,7 +41,7 @@ const AudioRecorder: React.FC = () => {
         set_cc(CurrentState.STOPPED);
       };
 
-      mediaRecorder.current.start(20000); // Split into 10-second chunks
+      mediaRecorder.current.start(10000); // Split into 10-second chunks
     } catch (error) {
       console.error('Error while recording', error);
     }
@@ -60,6 +60,17 @@ const AudioRecorder: React.FC = () => {
         const upload_response = await fetch('https://pr662n6jxj.execute-api.eu-north-1.amazonaws.com/dev/test', { method: 'POST', body: JSON.stringify({ uuid: sessionId.current, body: base64, isBase64Encoded: true }) });
         const upload_response_json = await upload_response.json();
         sessionId.current = upload_response_json.uuid;
+
+        const url = upload_response_json.URL;
+        // upload to s3
+         // Upload the file using the signed URL
+        const uploadResponse = await fetch(url, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'audio/mpeg', // Ensure the file's content type is set correctly
+          },
+          body: chunk,
+        });
         console.log(`>> chunk uploaded`, chunkCount.current)
       } catch (error) {
         console.error('Error uploading chunk:', error);
@@ -147,8 +158,8 @@ const AudioRecorder: React.FC = () => {
       <br />
       <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200 w-full" disabled={current_state === CurrentState.RECORDING} onClick={startRecording}>Start Recording</button>
       <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-200 w-full" onClick={stopRecording}>Stop Recording</button>
-      <button className="px-4 mb-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition duration-200 w-full" disabled={current_state === CurrentState.RECORDING} onClick={mergeChunks}>Merge Chunks</button>
-      <button className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 w-full" onClick={deleteFile}> Delete File</button>
+      <button className="px-4 mb-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition duration-200 w-full" disabled={current_state === CurrentState.RECORDING || current_state === CurrentState.MERGING} onClick={mergeChunks}>Merge Chunks</button>
+      <button disabled={current_state === CurrentState.RECORDING} className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 w-full" onClick={deleteFile}> Delete File</button>
       <br />
       <div className="mt-4">
       {
