@@ -22,7 +22,7 @@ const AudioRecorder: React.FC = () => {
 
   const [mergedFileName, set_mergedFileName] = useState('');
 
-
+// Function to start the audio recording
   const startRecording = async () => {
     try {
       set_cc(CurrentState.RECORDING);
@@ -47,12 +47,14 @@ const AudioRecorder: React.FC = () => {
     }
   };
 
+// Function to stop the audio recording
   const stopRecording = () => {
     if (mediaRecorder.current) {
       mediaRecorder.current.stop();
     }
   };
 
+  // Function to uploadChunk
   const uploadChunk = async (chunk: Blob) => {
     convertToBase64(chunk).then(async (base64) => {
       try {
@@ -62,8 +64,10 @@ const AudioRecorder: React.FC = () => {
         sessionId.current = upload_response_json.uuid;
 
         const url = upload_response_json.URL;
+
         // upload to s3
-         // Upload the file using the signed URL
+        // Upload the file using the signed URL
+
         const uploadResponse = await fetch(url, {
           method: 'PUT',
           headers: {
@@ -71,7 +75,6 @@ const AudioRecorder: React.FC = () => {
           },
           body: chunk,
         });
-        console.log(`>> chunk uploaded`, chunkCount.current)
       } catch (error) {
         console.error('Error uploading chunk:', error);
       }
@@ -92,8 +95,12 @@ const AudioRecorder: React.FC = () => {
     });
   };
 
+
+  // Function to Merge the Chunks 
   const mergeChunks = async () => {
     try {
+
+       // checking for the uuid as it is present or not.
       if (!sessionId.current) {
         alert(`No session id present. Please record some audio first!`);
         return;
@@ -108,6 +115,7 @@ const AudioRecorder: React.FC = () => {
         sessionId.current = '';
         chunkCount.current = 0; 
 
+        // Once the function is successfully executed then we set the name of the file in the mergedFileName variable and use it as a payload parameter for delete operation.
         set_mergedFileName((await response.json()).file_name);
       } else {
         set_cc(CurrentState.STOPPED);
@@ -120,6 +128,8 @@ const AudioRecorder: React.FC = () => {
     }
   };
 
+
+  // Function to Delete File
   const deleteFile = async () => {
     if (mergedFileName !== '') {
       try {
@@ -149,7 +159,6 @@ const AudioRecorder: React.FC = () => {
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
     <h2 className="text-2xl font-semibold text-gray-800 mb-6">Audio Recording Controls</h2>
   
-    {/* Action Buttons */}
     <div className="space-y-4 mb-6">
     <div className="mb-6">
       <span className="text-gray-600 font-medium">Current State:</span>

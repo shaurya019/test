@@ -33,7 +33,10 @@ export const handler = async (event) => {
     Bucket: bucket_name,
   };
 
+  // Create the command to list objects in the bucket
   const listObjectsCommand = new ListObjectsV2Command(listParams);
+
+  // Send the command and get the objects
   const objects = await s3.send(listObjectsCommand);
 
 
@@ -56,6 +59,7 @@ export const handler = async (event) => {
   }
 
 
+   // Fetch and combine all the audio files that match the UUID tag
   const combinedAudio = await Promise.all(
     audioFiles.map(async (audioFile) => {
       const getParams = {
@@ -66,16 +70,16 @@ export const handler = async (event) => {
       const getObjectCommand = new GetObjectCommand(getParams);
       const audio = await s3.send(getObjectCommand);
 
-
+// Convert the audio stream to a buffer and return it
       const audioBuffer = await streamToBuffer(audio.Body);
       return audioBuffer;
     })
   ).then((buffers) => Buffer.concat(buffers));
 
-
+// Generate a random file name for the combined audio file
   const file_name = randomUUID() + '.mpeg';
 
- 
+ // Set parameters to upload the combined audio file to S3
   const combinedAudioParams = {
     Bucket: bucket_name,
     Key: 'merged-audio-files/' + file_name,
@@ -86,7 +90,7 @@ export const handler = async (event) => {
   const putObjectCommand = new PutObjectCommand(combinedAudioParams);
   await s3.send(putObjectCommand);
 
-
+// Delete the original audio files after combining them
   await Promise.all(
     audioFiles.map(async (audioFile) => {
       const deleteParams = {
@@ -94,6 +98,7 @@ export const handler = async (event) => {
         Key: audioFile.Key,
       };
 
+        // Create the command to delete the audio file
       const deleteObjectCommand = new DeleteObjectCommand(deleteParams);
       await s3.send(deleteObjectCommand);
     })

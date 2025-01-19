@@ -15,8 +15,10 @@ export const handler = async (event) => {
   if (!uuid) {
     uuid = crypto.randomUUID(); 
   }
-
+  // Check if the event body exists and is Base64 encoded (indicating a file upload)
+  
   if (event.body && event.isBase64Encoded) {
+    
     const file_name = crypto.randomUUID();
     // upload to s3 with tag uuid=uuid
     const key = `tmp-recordings/${file_name}.mpeg`;
@@ -29,6 +31,7 @@ export const handler = async (event) => {
     const command = new PutObjectCommand(params);
   
     try {
+      // Generate a pre-signed URL that can be used to upload the file to S3 (valid for 60 seconds)
       const uploadUrl = await getSignedUrl(s3, command, { expiresIn: 60 });
       return {
         statusCode: 200,
